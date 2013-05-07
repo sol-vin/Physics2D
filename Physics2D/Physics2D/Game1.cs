@@ -20,7 +20,8 @@ namespace Physics2D
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         private AABB _aabb;
-        private Circle _circle;
+        private Circle _circlea, _circleb;
+        private Color bgcolor;
 
         public Game1()
         {
@@ -50,11 +51,18 @@ namespace Physics2D
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
             Assets.LoadContent(this);
-            _aabb = new AABB(new Vector2(60,60), new Vector2(80,80));
-            _aabb.Color = Color.Red;
 
-            _circle = new Circle(new Vector2(60,100), 10);
-            _circle.Color = Color.Yellow;
+            _circlea = new Circle(new Vector2(300,300), 10);
+            _circlea.Color = Color.Yellow;
+            _circlea.Velocity = -Vector2.One * .5f;
+            _circlea.Mass = 10;
+            _circlea.Restitution = .5f;
+
+            _circleb = new Circle(new Vector2(60, 70), 10);
+            _circleb.Color = Color.Chartreuse;
+            _circleb.Velocity = Vector2.One * .5f;
+            _circleb.Mass = 10;
+            _circleb.Restitution = .5f;
         }
 
         /// <summary>
@@ -77,7 +85,15 @@ namespace Physics2D
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
-            // TODO: Add your update logic here
+            _circlea.Update(gameTime);
+            _circleb.Update(gameTime);
+
+            Manifold m = new Manifold();
+
+            bgcolor = Collision.CirclevsCircle(_circlea, _circleb, ref m) ? Color.Green : Color.DarkRed;
+
+            if (m.AreColliding)
+                Collision.ResolveCollision(m);
 
             base.Update(gameTime);
         }
@@ -88,11 +104,11 @@ namespace Physics2D
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(bgcolor);
 
             spriteBatch.Begin();
-            _aabb.Draw(spriteBatch);
-            _circle.Draw(spriteBatch);
+            _circlea.Draw(spriteBatch);
+            _circleb.Draw(spriteBatch);
             spriteBatch.End();
 
             base.Draw(gameTime);

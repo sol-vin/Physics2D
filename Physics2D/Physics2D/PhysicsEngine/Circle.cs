@@ -7,19 +7,21 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Physics2D.PhysicsEngine
 {
-    public class Circle
+    public class Circle : PhysicsObject
     {
-        public Vector2 Position;
         public float Radius;
         public Color Color = Color.White;
-        public Rectangle BoundingBox
+        public new Rectangle BoundingBox
         {
-            get{return new Rectangle(
+            get
+            {
+                return new Rectangle(
                 (int)Position.X,
                 (int)Position.Y,
                 (int)Radius * 2,
                 (int)Radius * 2
-                );}
+                );
+            }
         }
 
         public float Diameter

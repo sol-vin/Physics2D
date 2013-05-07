@@ -110,6 +110,8 @@
     <Compile Include="PhysicsEngine\AABB.cs" />
     <Compile Include="PhysicsEngine\Assets.cs" />
     <Compile Include="PhysicsEngine\Circle.cs" />
+    <Compile Include="PhysicsEngine\Collision.cs" />
+    <Compile Include="PhysicsEngine\Manifold.cs" />
     <Compile Include="PhysicsEngine\PhysicsMath.cs" />
     <Compile Include="PhysicsEngine\PhysicsObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

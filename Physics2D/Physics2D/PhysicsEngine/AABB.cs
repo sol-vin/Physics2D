@@ -8,71 +8,55 @@ using Physics2D.PhysicsEngine;
 
 namespace Physics2D.PhysicsEngine
 {
-    public class AABB
+    public class AABB : PhysicsObject
     {
-        public Vector2 Min;
         public Vector2 Max;
         public Color Color = Color.White;
 
         public float Width
         {
-            get { return Max.X - Min.X; }
-            set { Max.X = value + Min.X;  }
+            get { return Max.X - Position.X; }
+            set { Max.X = value + Position.X;  }
         }
 
 
         public float Height
         {
-            get { return Max.Y - Min.Y; }
-            set { Max.Y = value + Min.Y; }
+            get { return Max.Y - Position.Y; }
+            set { Max.Y = value + Position.Y; }
         }
 
-        public Rectangle Rectangle
+        public new Rectangle BoundingBox
         {
-            get { return new Rectangle((int)Min.X, (int)Min.Y, (int)Width, (int)Height); }
+            get { return new Rectangle((int)Position.X, (int)Position.Y, (int)Width, (int)Height); }
             set
             { 
-                Min.X = value.X;
-                Min.Y = value.Y;
+                Position.X = value.X;
+                Position.Y = value.Y;
                 Width = value.Width;
                 Height = value.Height;
             }
         }
 
-        public AABB(Vector2 min, Vector2 max)
+        public AABB(Vector2 position, Vector2 max)
         {
-            if(max.X < min.X || max.Y < min.Y) //Sanity check
-                throw new Exception("Data is out of bounds!");
-            Min = min;
+            if(max.X < position.X || max.Y < position.Y) //Sanity check
+                throw new Exception("Data is out of bounds! Max cannot be behind position!");
+            Position = position;
             Max = max;
         }
 
-        public bool TestCollision(AABB aabb)
-        {
-            if (Max.X > aabb.Min.X || Min.X > aabb.Max.X)
-                return true;
-            if (Max.Y < aabb.Min.Y || Min.Y > aabb.Max.Y)
-                return false;
-            return true;
-        }
 
-        public static bool AABBvsAABB(AABB a, AABB b)
-        {
-            if(a.Max.X > b.Min.X || a.Min.X > b.Max.X)
-                return false;
-            if (a.Max.Y < b.Min.Y || a.Min.Y > b.Max.Y) 
-                return false;
-            return true;
-        }
 
-        public void Update(GameTime gt)
+        public override void Update(GameTime gt)
         {
-
+            Max += Velocity; //Make sure the back updates!
+            base.Update(gt);
         }
 
         public void Draw(SpriteBatch sb)
         {
-            sb.Draw(Assets.Pixel, Rectangle, Color);
+            sb.Draw(Assets.Pixel, BoundingBox, Color);
         }
     }
 }

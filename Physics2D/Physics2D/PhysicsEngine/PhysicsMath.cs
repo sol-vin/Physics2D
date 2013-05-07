@@ -17,5 +17,12 @@ namespace Physics2D.PhysicsEngine
         {
             return (float)Math.Sqrt(((int)(a.X - b.X)^2 + (int)(a.Y - b.Y)^2));
         }
+
+        public static Vector2 GetNormal(Vector2 a, Vector2 b)
+        {
+            Vector2 ret = b - a;
+            ret.Normalize();
+            return ret;
+        }
     }
 }
