@@ -52,15 +52,15 @@ namespace Physics2D
             spriteBatch = new SpriteBatch(GraphicsDevice);
             Assets.LoadContent(this);
 
-            _circlea = new Circle(new Vector2(300,300), 10);
+            _circlea = new Circle(new Vector2(60,70), 10);
             _circlea.Color = Color.Yellow;
-            _circlea.Velocity = -Vector2.One * .5f;
+            _circlea.Velocity = Vector2.One * .5f;
             _circlea.Mass = 10;
             _circlea.Restitution = .5f;
 
-            _circleb = new Circle(new Vector2(60, 70), 10);
+            _circleb = new Circle(new Vector2(300, 300), 10);
             _circleb.Color = Color.Chartreuse;
-            _circleb.Velocity = Vector2.One * .5f;
+            _circleb.Velocity = -Vector2.One * .5f;
             _circleb.Mass = 10;
             _circleb.Restitution = .5f;
         }
@@ -84,6 +84,18 @@ namespace Physics2D
             // Allows the game to exit
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
+
+            if (Keyboard.GetState().IsKeyDown(Keys.Space))
+            {
+                _circlea.Velocity = Vector2.Zero;
+                _circleb.Velocity = Vector2.Zero;
+            }
+
+            if (Keyboard.GetState().IsKeyDown(Keys.A))
+            {
+                _circlea.Velocity = Vector2.One*.5f;
+                _circleb.Velocity = -Vector2.One*.5f;
+            }
 
             _circlea.Update(gameTime);
             _circleb.Update(gameTime);
