@@ -10,21 +10,15 @@ namespace Physics2D.PhysicsEngine
 {
     public class AABB : PhysicsObject
     {
-        public Vector2 Max;
         public Color Color = Color.White;
 
-        public float Width
-        {
-            get { return Max.X - Position.X; }
-            set { Max.X = value + Position.X;  }
-        }
+		public float Width;
+		public float Height;
 
-
-        public float Height
-        {
-            get { return Max.Y - Position.Y; }
-            set { Max.Y = value + Position.Y; }
-        }
+		public float Top{ get { return Position.Y; } }
+		public float Left{ get { return Position.X; } }
+		public float Right{ get { return Position.X + Width; } }
+		public float Bottom{ get { return Position.Y + Height; } }
 
         public new Rectangle BoundingBox
         {
@@ -38,19 +32,15 @@ namespace Physics2D.PhysicsEngine
             }
         }
 
-        public AABB(Vector2 position, Vector2 max)
+		public AABB(Vector2 position, int width, int height)
         {
-            if(max.X < position.X || max.Y < position.Y) //Sanity check
-                throw new Exception("Data is out of bounds! Max cannot be behind position!");
             Position = position;
-            Max = max;
+			Width = width;
+			Height = height;
         }
-
-
 
         public override void Update(GameTime gt)
         {
-            Max += Velocity; //Make sure the back updates!
             base.Update(gt);
         }
 

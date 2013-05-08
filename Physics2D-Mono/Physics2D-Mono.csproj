@@ -75,6 +75,9 @@
     <Compile Include="..\Physics2D\Physics2D\PhysicsEngine\PhysicsObject.cs">
       <Link>PhysicsEngine\PhysicsObject.cs</Link>
     </Compile>
+    <Compile Include="..\Physics2D\Physics2D\PhysicsEngine\Engine.cs">
+      <Link>PhysicsEngine\Engine.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Icon.png" />

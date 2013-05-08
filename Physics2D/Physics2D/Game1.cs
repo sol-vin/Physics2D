@@ -19,8 +19,9 @@ namespace Physics2D
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        private AABB _aabb;
-        private Circle _circlea, _circleb;
+		private AABB _aabb3;
+		private Circle _circle3;
+
         private Color bgcolor;
 
         public Game1()
@@ -52,17 +53,18 @@ namespace Physics2D
             spriteBatch = new SpriteBatch(GraphicsDevice);
             Assets.LoadContent(this);
 
-            _circlea = new Circle(new Vector2(60,70), 10);
-            _circlea.Color = Color.Yellow;
-            _circlea.Velocity = Vector2.One * .5f;
-            _circlea.Mass = 10;
-            _circlea.Restitution = .5f;
+			//AABB vs Circle
+			_aabb3 = new AABB(new Vector2(60,140), 10, 10);
+            _aabb3.Color = Color.Yellow;
+			_aabb3.Velocity = Vector2.UnitX * .5f; 
+            _aabb3.Mass = 10;
+            _aabb3.Restitution = .5f;
 
-            _circleb = new Circle(new Vector2(300, 300), 10);
-            _circleb.Color = Color.Chartreuse;
-            _circleb.Velocity = -Vector2.One * .5f;
-            _circleb.Mass = 10;
-            _circleb.Restitution = .5f;
+			_circle3 = new Circle(new Vector2(300,148), 10);
+            _circle3.Color = Color.Chartreuse;
+			_circle3.Velocity = -Vector2.UnitX * .5f; 
+            _circle3.Mass = 10;
+            _circle3.Restitution = .5f;
         }
 
         /// <summary>
@@ -79,33 +81,22 @@ namespace Physics2D
         /// checking for collisions, gathering input, and playing audio.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
-        protected override void Update(GameTime gameTime)
-        {
-            // Allows the game to exit
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
-                this.Exit();
+        protected override void Update (GameTime gameTime)
+		{
+			// Allows the game to exit
+			if (GamePad.GetState (PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
+				this.Exit ();
 
-            if (Keyboard.GetState().IsKeyDown(Keys.Space))
-            {
-                _circlea.Velocity = Vector2.Zero;
-                _circleb.Velocity = Vector2.Zero;
-            }
+			_aabb3.Update (gameTime);
+			_circle3.Update (gameTime);
 
-            if (Keyboard.GetState().IsKeyDown(Keys.A))
-            {
-                _circlea.Velocity = Vector2.One*.5f;
-                _circleb.Velocity = -Vector2.One*.5f;
-            }
-
-            _circlea.Update(gameTime);
-            _circleb.Update(gameTime);
-
-            Manifold m = new Manifold();
-
-            bgcolor = Collision.CirclevsCircle(_circlea, _circleb, ref m) ? Color.Green : Color.DarkRed;
-
-            if (m.AreColliding)
-                Collision.ResolveCollision(m);
+			Manifold m = new Manifold ();
+			bgcolor = Collision.AABBvsCircle (_aabb3, _circle3, ref m) ? Color.Green : Color.DarkRed;
+			if (m.AreColliding) {
+				m = new Manifold();
+				Collision.AABBvsCircle (_aabb3, _circle3, ref m);
+				Collision.ResolveCollision (m);
+			}
 
             base.Update(gameTime);
         }
@@ -119,8 +110,8 @@ namespace Physics2D
             GraphicsDevice.Clear(bgcolor);
 
             spriteBatch.Begin();
-            _circlea.Draw(spriteBatch);
-            _circleb.Draw(spriteBatch);
+			_aabb3.Draw(spriteBatch);
+			_circle3.Draw(spriteBatch);
             spriteBatch.End();
 
             base.Draw(gameTime);
