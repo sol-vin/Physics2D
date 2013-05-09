@@ -19,8 +19,9 @@ namespace Physics2D
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+		private AABB _aabb1, _aabb2;
 		private AABB _aabb3;
-		private Circle _circle3;
+		private Circle _circle1;
 
         private Color bgcolor;
 
@@ -54,17 +55,29 @@ namespace Physics2D
             Assets.LoadContent(this);
 
 			//AABB vs Circle
-			_aabb3 = new AABB(new Vector2(60,140), 10, 10);
-            _aabb3.Color = Color.Yellow;
-			_aabb3.Velocity = Vector2.UnitX * .5f; 
+			_aabb1 = new AABB(new Vector2(300,20), 20, 20);
+            _aabb1.Color = Color.Chocolate;
+			_aabb1.Velocity = Vector2.UnitY * .5f; 
+            _aabb1.Mass = 10;
+            _aabb1.Restitution = .5f;
+
+			_aabb2 = new AABB(new Vector2(300,140), 20, 20);
+            _aabb2.Color = Color.CadetBlue;
+			_aabb2.Velocity = -Vector2.UnitY * .7f; 
+            _aabb2.Mass = 10;
+            _aabb2.Restitution = .5f;
+
+			_aabb3 = new AABB(new Vector2(300,200), 20, 20);
+            _aabb3.Color = Color.CadetBlue;
+			_aabb3.Velocity = -Vector2.UnitX * .5f; 
             _aabb3.Mass = 10;
             _aabb3.Restitution = .5f;
 
-			_circle3 = new Circle(new Vector2(300,148), 10);
-            _circle3.Color = Color.Chartreuse;
-			_circle3.Velocity = -Vector2.UnitX * .5f; 
-            _circle3.Mass = 10;
-            _circle3.Restitution = .5f;
+			_circle1 = new Circle(new Vector2(60,203), 10);
+            _circle1.Color = Color.Chocolate;
+			_circle1.Velocity = Vector2.UnitX * .5f; 
+            _circle1.Mass = 10;
+            _circle1.Restitution = .5f;
         }
 
         /// <summary>
@@ -87,16 +100,29 @@ namespace Physics2D
 			if (GamePad.GetState (PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
 				this.Exit ();
 
-			_aabb3.Update (gameTime);
-			_circle3.Update (gameTime);
+			_aabb1.Update (gameTime);
+			_aabb2.Update (gameTime);
 
+			_aabb3.Update(gameTime);
+			_circle1.Update(gameTime);
+			
 			Manifold m = new Manifold ();
-			bgcolor = Collision.AABBvsCircle (_aabb3, _circle3, ref m) ? Color.Green : Color.DarkRed;
+			bgcolor = Collision.TestAABBvsAABB(_aabb2, _aabb1, ref m) ? Color.Green : Color.DarkRed;
 			if (m.AreColliding) {
 				m = new Manifold();
-				Collision.AABBvsCircle (_aabb3, _circle3, ref m);
+				Collision.TestAABBvsAABB (_aabb2, _aabb1, ref m);
 				Collision.ResolveCollision (m);
+				Collision.PositionalCorrection(m);
 			}
+
+			//TODO: Problems with AABBvsCircle Collision
+//			m = new Manifold ();
+//			bgcolor = Collision.AABBvsCircle(_aabb3, _circle1, ref m) ? Color.Green : Color.DarkRed;
+//			if (m.AreColliding) {
+//				m = new Manifold();
+//				Collision.AABBvsCircle (_aabb3, _circle1, ref m);
+//				Collision.ResolveCollision (m);
+//			}5
 
             base.Update(gameTime);
         }
@@ -110,8 +136,11 @@ namespace Physics2D
             GraphicsDevice.Clear(bgcolor);
 
             spriteBatch.Begin();
+			_aabb1.Draw(spriteBatch);
+			_aabb2.Draw(spriteBatch);
+
 			_aabb3.Draw(spriteBatch);
-			_circle3.Draw(spriteBatch);
+			_circle1.Draw(spriteBatch);
             spriteBatch.End();
 
             base.Draw(gameTime);

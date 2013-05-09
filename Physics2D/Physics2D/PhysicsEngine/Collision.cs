@@ -50,6 +50,55 @@ namespace Physics2D.PhysicsEngine
 					}
 				}
 			}
+			return false;
+        }
+
+		//TODO: Remove test method
+		public static bool TestAABBvsAABB (AABB a, AABB b, ref Manifold m)
+		{
+			m.A = a;
+			m.B = b;
+			m.Normal = b.Position - a.Position;
+
+			//Calculate the extent on the X axis
+			float aExtent = (a.Right - a.Left) / 2;
+			float bExtent = (b.Right - b.Left) / 2;
+
+			//Find the X overlap
+			float xExtent = aExtent + bExtent - Math.Abs (m.Normal.X);
+
+			//SAT Test on X
+			if (xExtent > 0) {
+				//There was overlap on the X axis, now lets try to Y
+				aExtent = (a.Bottom - a.Top) / 2;
+				bExtent = (b.Bottom - b.Top) / 2;
+
+				//Calculate Y overlap
+				float yExtent = aExtent + bExtent - Math.Abs(m.Normal.Y);
+
+				//SAT Test on Y axis
+				if (yExtent > 0){
+					//Find which axis has the biggest penetration ;D
+					if (xExtent > yExtent){
+						if(m.Normal.X < 0)
+							m.Normal = -Vector2.UnitX;
+						else
+							m.Normal= Vector2.UnitX;
+						m.PenetrationDepth = xExtent;	
+						m.AreColliding = true;
+						return true;
+					}
+					else {
+						if(m.Normal.Y < 0)
+							m.Normal = -Vector2.UnitY;
+						else
+							m.Normal= Vector2.UnitY;
+						m.PenetrationDepth = yExtent;
+						m.AreColliding = true;
+						return true;
+					}
+				}
+			}
 
 			return false;
         }
@@ -62,6 +111,8 @@ namespace Physics2D.PhysicsEngine
 			Vector2 n = b.Position - a.Position;
 			//Closest edge
 			Vector2 closest = m.Normal;
+
+
 
 			//Find extents for our AABB
 			float xExtent = (a.Right - a.Left) / 2;
@@ -174,5 +225,14 @@ namespace Physics2D.PhysicsEngine
             m.A.Velocity -= m.A.InvertedMass*impulse;
             m.B.Velocity += m.B.InvertedMass*impulse;
         }
+
+		public static void PositionalCorrection(Manifold m)
+		{
+			const float percent = 0.2f;
+			const float slop = 0.01f;
+			Vector2 correction = Math.Max (m.PenetrationDepth - slop, 0.0f) / (m.A.InvertedMass + m.B.InvertedMass) * percent * m.Normal;
+			m.A.Position -= m.A.InvertedMass * correction;
+			m.B.Position += m.B.InvertedMass * correction;
+		}
     }
 }

@@ -34,9 +34,13 @@ namespace Physics2D.PhysicsEngine
             get { return _mass; }
             set 
             {
-				if(value <= 0) throw new Exception("Mass cannot be zero!");
-                _mass = value;
-                InvertedMass = 1/_mass;
+				if(value < 0) throw new Exception("Mass cannot be less than zero!");
+				_mass = value;
+
+				if(value == 0)
+					InvertedMass = 0;
+				else
+	                InvertedMass = 1/_mass;
             }
         }
 		/// <summary>
