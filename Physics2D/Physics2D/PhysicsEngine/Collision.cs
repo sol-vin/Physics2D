@@ -31,25 +31,29 @@ namespace Physics2D.PhysicsEngine
 				if (yExtent > 0){
 					//Find which axis has the biggest penetration ;D
 					if (xExtent > yExtent){
-						if(m.Normal.X < 0)
-							m.Normal = new Vector2(-1,0);
-						else
-							m.Normal= Vector2.Zero;
+//						if(m.Normal.X < 0)
+//							m.Normal = -Vector2.UnitX;
+//						else
+//							m.Normal= Vector2.UnitX;
+
+						m.Normal = PhysicsMath.GetNormal(m.A.Position, m.B.Position);
 						m.PenetrationDepth = xExtent;	
 						m.AreColliding = true;
 						return true;
 					}
 					else {
-						if(m.Normal.Y < 0)
-							m.Normal = new Vector2(0,-1);
-						else
-							m.Normal= Vector2.Zero;
+//						if(m.Normal.Y < 0)
+//							m.Normal = -Vector2.UnitY;
+//						else
+//							m.Normal= Vector2.UnitY;
+						m.Normal = PhysicsMath.GetNormal(m.A.Position, m.B.Position);
 						m.PenetrationDepth = yExtent;
 						m.AreColliding = true;
 						return true;
 					}
 				}
 			}
+
 			return false;
         }
 
@@ -79,20 +83,24 @@ namespace Physics2D.PhysicsEngine
 				//SAT Test on Y axis
 				if (yExtent > 0){
 					//Find which axis has the biggest penetration ;D
+					Vector2 fixnormal;
 					if (xExtent > yExtent){
 						if(m.Normal.X < 0)
-							m.Normal = -Vector2.UnitX;
+							fixnormal = -Vector2.UnitX;
 						else
-							m.Normal= Vector2.UnitX;
+							fixnormal = Vector2.UnitX;
+
+						m.Normal = PhysicsMath.GetNormal(m.A.Position, m.B.Position) * fixnormal.X;
 						m.PenetrationDepth = xExtent;	
 						m.AreColliding = true;
 						return true;
 					}
 					else {
 						if(m.Normal.Y < 0)
-							m.Normal = -Vector2.UnitY;
+							 fixnormal = -Vector2.UnitY;
 						else
-							m.Normal= Vector2.UnitY;
+							fixnormal= Vector2.UnitY;
+						m.Normal = PhysicsMath.GetNormal(m.A.Position, m.B.Position) * fixnormal.Y;
 						m.PenetrationDepth = yExtent;
 						m.AreColliding = true;
 						return true;

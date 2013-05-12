@@ -78,6 +78,9 @@
     <Compile Include="..\Physics2D\Physics2D\PhysicsEngine\Engine.cs">
       <Link>PhysicsEngine\Engine.cs</Link>
     </Compile>
+    <Compile Include="..\Physics2D\Physics2D\TestScenarios\AABBvsAABBTest.cs">
+      <Link>TestScenarios\AABBvsAABBTest.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Icon.png" />
@@ -85,6 +88,7 @@
   <ItemGroup>
     <Folder Include="Content\" />
     <Folder Include="PhysicsEngine\" />
+    <Folder Include="TestScenarios\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
