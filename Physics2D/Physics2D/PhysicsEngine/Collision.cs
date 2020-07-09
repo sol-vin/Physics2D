@@ -164,14 +164,14 @@ namespace Physics2D.PhysicsEngine
 				return false;
 			d = (float)Math.Sqrt (d);
 			if (inside) {
-				m.Normal = -PhysicsMath.GetNormal(a.Position, b.Position);
-				m.PenetrationDepth = r + d;
+				m.Normal = -m.normal;
+				m.PenetrationDepth = r - d;
 				m.AreColliding = true;
 				return true;
 			} 
 			else {
 				m.Normal = PhysicsMath.GetNormal(a.Position, b.Position);
-				m.PenetrationDepth = r + d;
+				m.PenetrationDepth = r - d;
 				m.AreColliding = true;
 				return true;
 			}
